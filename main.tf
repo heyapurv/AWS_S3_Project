@@ -38,6 +38,9 @@ resource "aws_s3_bucket_website_configuration" "static_site_config" {
 # Make the bucket content publicly readable
 resource "aws_s3_bucket_policy" "allow_public_access" {
   bucket = aws_s3_bucket.static_site_bucket.id
+  
+  # This dependency ensures the public access block is disabled first.
+  depends_on = [aws_s3_bucket_public_access_block.public_access_block]
 
   policy = jsonencode({
     Version = "2012-10-17"
