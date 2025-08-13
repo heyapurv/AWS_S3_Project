@@ -7,7 +7,7 @@ provider "aws" {
 
 # Create a globally unique S3 bucket
 resource "aws_s3_bucket" "static_site_bucket" {
-  bucket = "your-unique-website-bucket-name" # Change this to a globally unique name
+  bucket = "heyapurv-static-site-20250813" # Change this to a globally unique name
 
   tags = {
     Name        = "StaticWebsiteBucket"

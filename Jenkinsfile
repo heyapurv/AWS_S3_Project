@@ -29,7 +29,7 @@ pipeline {
             steps {
                 // Use the AWS CLI to sync your website files to the S3 bucket
                 // The bucket name here must match the one in your main.tf
-                sh 'aws s3 sync . s3://your-unique-website-bucket-name --acl public-read --delete'
+                sh 'aws s3 sync . s3://heyapurv-static-site-20250813 --acl public-read --delete'
             }
         }
     }
