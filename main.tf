@@ -2,8 +2,14 @@ provider "aws" {
   region = "us-east-1"
 }
 
+# Generate a random suffix for uniqueness
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
+}
+
+# Create S3 bucket with unique name
 resource "aws_s3_bucket" "static_site" {
-  bucket = "heyapurv-static-site-20250813"
+  bucket = "heyapurv-static-site-${random_id.bucket_suffix.hex}"
 }
 
 resource "aws_s3_bucket_ownership_controls" "ownership" {
@@ -27,8 +33,6 @@ resource "aws_s3_bucket_website_configuration" "website" {
   index_document {
     suffix = "index.html"
   }
-
-
 }
 
 resource "aws_s3_bucket_policy" "public_read_policy" {
@@ -45,4 +49,14 @@ resource "aws_s3_bucket_policy" "public_read_policy" {
       }
     ]
   })
+}
+
+# Output bucket name for Jenkins
+output "bucket_name" {
+  value = aws_s3_bucket.static_site.bucket
+}
+
+# Output website endpoint
+output "website_endpoint" {
+  value = aws_s3_bucket_website_configuration.website.website_endpoint
 }

@@ -25,7 +25,6 @@ pipeline {
             steps {
                 sh '''
                   aws s3 sync . s3://heyapurv-static-site-20250813 \
-                    --acl public-read \
                     --delete \
                     --exclude "*.tf*" \
                     --exclude "Jenkinsfile" \
