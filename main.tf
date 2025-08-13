@@ -15,6 +15,17 @@ resource "aws_s3_bucket" "static_site_bucket" {
   }
 }
 
+# Explicitly disable the public access block for this bucket
+# This allows the public bucket policy to be applied.
+resource "aws_s3_bucket_public_access_block" "public_access_block" {
+  bucket = aws_s3_bucket.static_site_bucket.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
 # Enable static website hosting on the bucket
 resource "aws_s3_bucket_website_configuration" "static_site_config" {
   bucket = aws_s3_bucket.static_site_bucket.id
@@ -22,13 +33,12 @@ resource "aws_s3_bucket_website_configuration" "static_site_config" {
   index_document {
     suffix = "index.html"
   }
-
 }
 
 # Make the bucket content publicly readable
 resource "aws_s3_bucket_policy" "allow_public_access" {
   bucket = aws_s3_bucket.static_site_bucket.id
-  
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
