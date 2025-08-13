@@ -21,15 +21,38 @@ pipeline {
             }
         }
 
+        stage('Get Deployment Info') {
+            steps {
+                script {
+                    BUCKET_NAME = sh(
+                        script: "terraform output -raw bucket_name",
+                        returnStdout: true
+                    ).trim()
+
+                    WEBSITE_URL = sh(
+                        script: "terraform output -raw website_url",
+                        returnStdout: true
+                    ).trim()
+                }
+            }
+        }
+
         stage('Upload Website Files to S3') {
             steps {
-                sh '''
-                  aws s3 sync . s3://heyapurv-static-site-20250813 \
+                sh """
+                  aws s3 sync . s3://${BUCKET_NAME} \
+                    --acl public-read \
                     --delete \
                     --exclude "*.tf*" \
                     --exclude "Jenkinsfile" \
                     --exclude ".git/*"
-                '''
+                """
+            }
+        }
+
+        stage('Show Website URL') {
+            steps {
+                echo "🌐 Your site is live at: ${WEBSITE_URL}"
             }
         }
     }

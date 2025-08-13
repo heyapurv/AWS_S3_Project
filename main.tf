@@ -2,12 +2,11 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# Generate a random suffix for uniqueness
+# Random suffix to avoid S3 bucket name collisions
 resource "random_id" "bucket_suffix" {
   byte_length = 4
 }
 
-# Create S3 bucket with unique name
 resource "aws_s3_bucket" "static_site" {
   bucket = "heyapurv-static-site-${random_id.bucket_suffix.hex}"
 }
@@ -56,7 +55,7 @@ output "bucket_name" {
   value = aws_s3_bucket.static_site.bucket
 }
 
-# Output website endpoint
-output "website_endpoint" {
-  value = aws_s3_bucket_website_configuration.website.website_endpoint
+# Output website endpoint for Jenkins
+output "website_url" {
+  value = "http://${aws_s3_bucket_website_configuration.website.website_endpoint}"
 }
